@@ -1,0 +1,44 @@
+﻿  birds.cpp
+  bitmapclass.cpp
+  cameraclass.cpp
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+  Cat.cpp
+  cpuclass.cpp
+  d3dclass.cpp
+  DDSTextureLoader.cpp
+  fernPlant.cpp
+  floawers.cpp
+  fontclass.cpp
+  fontshaderclass.cpp
+  fpsclass.cpp
+  graphicsclass.cpp
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+  grass02.cpp
+  grassClass.cpp
+  inputclass.cpp
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+  InputMappingClass.cpp
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+  lightclass.cpp
+  lightshaderclass.cpp
+  main.cpp
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+  Generating Code...
+  Compiling...
+  modelclass.cpp
+  PointLightClass.cpp
+  Raccoon.cpp
+  smallBush.cpp
+  smoliv.cpp
+  Stonjourner.cpp
+  systemclass.cpp
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+  textclass.cpp
+  textureclass.cpp
+  textureshaderclass.cpp
+  timerclass.cpp
+  TreeModelClass.cpp
+  TreeModelLeafClass.cpp
+  whimsicott.cpp
+  Generating Code...
+  Framework.vcxproj -> C:\Users\USER\OneDrive\Desktop\PA4\Debug\Framework.exe
