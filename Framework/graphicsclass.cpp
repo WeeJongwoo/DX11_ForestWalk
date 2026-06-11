@@ -3,6 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include "graphicsclass.h"
 #include "InputMappingClass.h"
+#include "ModelBuilder.h"
 
 
 GraphicsClass::GraphicsClass()
@@ -217,73 +218,17 @@ void GraphicsClass::Shutdown()
 		m_Model = 0;
 	}
 
-	if (m_Cat)
+	// Release all models (owned by m_Models, built via ModelBuilder).
+	// Frees every model in one loop (the old per-pointer code leaked a few).
+	for (ModelClass* model : m_Models)
 	{
-		m_Cat->Shutdown();
-		delete m_Cat;
-		m_Cat = 0;
+		if (model)
+		{
+			model->Shutdown();
+			delete model;
+		}
 	}
-	if (m_birds)
-	{
-		m_birds->Shutdown();
-		delete m_birds;
-		m_birds = 0;
-	}
-	if (m_grass02)
-	{
-		m_grass02->Shutdown();
-		delete m_grass02;
-		m_grass02 = 0;
-	}
-	if (m_Raccoon)
-	{
-		m_Raccoon->Shutdown();
-		delete m_Raccoon;
-		m_Raccoon = 0;
-	}
-	if (m_smallBush)
-	{
-		m_smallBush->Shutdown();
-		delete m_smallBush;
-		m_smallBush = 0;
-	}
-	if (m_smoliv)
-	{
-		m_smoliv->Shutdown();
-		delete m_smoliv;
-		m_smoliv = 0;
-	}
-	if (m_Stonjourner)
-	{
-		m_Stonjourner->Shutdown();
-		delete m_Stonjourner;
-		m_Stonjourner = 0;
-	}
-	if (m_TreeModelClass)
-	{
-		m_TreeModelClass->Shutdown();
-		delete m_TreeModelClass;
-		m_TreeModelClass = 0;
-	}
-	if (m_TreeModelLeafClass)
-	{
-		m_TreeModelLeafClass->Shutdown();
-		delete m_TreeModelLeafClass;
-		m_TreeModelLeafClass = 0;
-	}
-	if (m_whimsicott)
-	{
-		m_whimsicott->Shutdown();
-		delete m_whimsicott;
-		m_whimsicott = 0;
-	}
-
-	if (m_Ground)
-	{
-		m_Ground->Shutdown();
-		delete m_Ground;
-		m_Ground = 0;
-	}
+	m_Models.clear();
 
 	// Release the camera object.
 	if (m_Camera)
@@ -321,11 +266,6 @@ void GraphicsClass::Shutdown()
 		m_TextureShader->Shutdown();
 		delete m_TextureShader;
 		m_TextureShader = 0;
-	}
-
-	if (!m_Models.empty())
-	{
-		m_Models.clear();
 	}
 
 	return;
@@ -536,139 +476,32 @@ void GraphicsClass::IncreaseIntensity()
 
 bool GraphicsClass::SetModel(HWND hwnd)
 {
-	bool result;
+	// The builder encapsulates the repeated "new T -> Initialize -> error check
+	// -> push into m_Models" procedure.
+	// Add order == m_Models index order. Render() branches on this index,
+	// so the order must NOT change.
+	ModelBuilder builder(m_D3D->GetDevice());
 
-	m_Ground = new ModelClass;
-	if (!m_Ground)
-	{
-		return false;
-	}
-	result = m_Ground->Initialize(m_D3D->GetDevice(), L"./data/ground.obj", L"./data/ground.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
-		return false;
-	}
+	builder.Add<ModelClass>(L"./data/ground.obj",              L"./data/ground.dds")                   // 0
+	       .Add<Cat>(L"./data/Cat.obj",                        L"./data/Cat.dds")                      // 1
+	       .Add<fernPlant>(L"./data/fernPlant.obj",            L"./data/fernPlant.dds")                // 2
+	       .Add<floawers>(L"./data/flowers.obj",               L"./data/flowers.dds")                  // 3
+	       .Add<grass02>(L"./data/grass02.obj",                L"./data/grass02.dds")                  // 4
+	       .Add<grassClass>(L"./data/grass.obj",               L"./data/grass.dds")                    // 5
+	       .Add<Raccoon>(L"./data/Raccoon.obj",                L"./data/Raccoon.dds")                  // 6
+	       .Add<smallBush>(L"./data/small_bush.obj",           L"./data/small_bush.dds")               // 7
+	       .Add<smoliv>(L"./data/smoliv.obj",                  L"./data/smoliv.dds")                   // 8
+	       .Add<Stonjourner>(L"./data/Stonjourner.obj",        L"./data/Stonjourner.dds")              // 9
+	       .Add<TreeModelClass>(L"./data/tree01.obj",          L"./data/tree01.dds")                   // 10
+	       .Add<TreeModelLeafClass>(L"./data/tree01_leaf.obj", L"./data/tree01_leaf.dds")              // 11
+	       .Add<whimsicott>(L"./data/whimsicott.obj",          L"./data/whimsicott_mat_Base_Color.dds")// 12
+	       .Add<birds>(L"./data/birds.obj",                    L"./data/birds.dds");                   // 13
 
-	m_Cat = new Cat;
-	result = m_Cat->Initialize(m_D3D->GetDevice(), L"./data/Cat.obj", L"./data/Cat.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
-		return false;
-	}
-
-	m_FernPlat = new fernPlant;
-	result = m_FernPlat->Initialize(m_D3D->GetDevice(), L"./data/fernPlant.obj", L"./data/fernPlant.dds");
-	if (!result)
+	if (!builder.BuildInto(m_Models))
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
 		return false;
 	}
-
-	m_floawers = new floawers;
-	result = m_floawers->Initialize(m_D3D->GetDevice(), L"./data/flowers.obj", L"./data/flowers.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
-		return false;
-	}
-
-	m_grass02 = new grass02;
-	result = m_grass02->Initialize(m_D3D->GetDevice(), L"./data/grass02.obj", L"./data/grass02.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
-		return false;
-	}
-
-	m_grassClass = new grassClass;
-	result = m_grassClass->Initialize(m_D3D->GetDevice(), L"./data/grass.obj", L"./data/grass.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
-		return false;
-	}
-
-	m_Raccoon = new Raccoon;
-	result = m_Raccoon->Initialize(m_D3D->GetDevice(), L"./data/Raccoon.obj", L"./data/Raccoon.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
-		return false;
-	}
-
-	m_smallBush = new smallBush;
-	result = m_smallBush->Initialize(m_D3D->GetDevice(), L"./data/small_bush.obj", L"./data/small_bush.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
-		return false;
-	}
-
-	m_smoliv = new smoliv;
-	result = m_smoliv->Initialize(m_D3D->GetDevice(), L"./data/smoliv.obj", L"./data/smoliv.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
-		return false;
-	}
-
-	m_Stonjourner = new Stonjourner;
-	result = m_Stonjourner->Initialize(m_D3D->GetDevice(), L"./data/Stonjourner.obj", L"./data/Stonjourner.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
-		return false;
-	}
-
-	m_whimsicott = new whimsicott;
-	result = m_whimsicott->Initialize(m_D3D->GetDevice(), L"./data/whimsicott.obj", L"./data/whimsicott_mat_Base_Color.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
-		return false;
-	}
-
-	m_TreeModelClass = new TreeModelClass;
-	result = m_TreeModelClass->Initialize(m_D3D->GetDevice(), L"./data/tree01.obj", L"./data/tree01.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
-		return false;
-	}
-
-	m_TreeModelLeafClass = new TreeModelLeafClass;
-	result = m_TreeModelLeafClass->Initialize(m_D3D->GetDevice(), L"./data/tree01_leaf.obj", L"./data/tree01_leaf.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
-		return false;
-	}
-
-	m_birds = new birds;
-	result = m_birds->Initialize(m_D3D->GetDevice(), L"./data/birds.obj", L"./data/birds.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
-		return false;
-	}
-
-
-	m_Models.push_back(m_Ground);
-	m_Models.push_back(m_Cat);
-	m_Models.push_back(m_FernPlat);
-	m_Models.push_back(m_floawers);
-	m_Models.push_back(m_grass02);
-	m_Models.push_back(m_grassClass);
-	m_Models.push_back(m_Raccoon);
-	m_Models.push_back(m_smallBush);
-	m_Models.push_back(m_smoliv);
-	m_Models.push_back(m_Stonjourner);
-	m_Models.push_back(m_TreeModelClass);
-	m_Models.push_back(m_TreeModelLeafClass);
-	m_Models.push_back(m_whimsicott);
-	m_Models.push_back(m_birds);
 
 	return true;
 }

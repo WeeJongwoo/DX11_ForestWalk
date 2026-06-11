@@ -88,22 +88,8 @@ private:
 	CameraClass* m_Camera;
 	ModelClass* m_Model;
 
-	ModelClass* m_Ground;
-
-	Cat* m_Cat;
-	fernPlant* m_FernPlat;
-	floawers* m_floawers;
-	grass02* m_grass02;
-	grassClass* m_grassClass;
-	Raccoon* m_Raccoon;
-	smallBush* m_smallBush;
-	smoliv* m_smoliv;
-	Stonjourner* m_Stonjourner;
-	TreeModelClass* m_TreeModelClass;
-	TreeModelLeafClass* m_TreeModelLeafClass;
-	whimsicott* m_whimsicott;
-	birds* m_birds;
-
+	// All scene models are created by ModelBuilder and owned by m_Models.
+	// (The individual member pointers were redundant with m_Models, so removed.)
 	std::vector<ModelClass*> m_Models;
 
 	LightShaderClass* m_LightShader;
