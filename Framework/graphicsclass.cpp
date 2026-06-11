@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+﻿////////////////////////////////////////////////////////////////////////////////
 // Filename: graphicsclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "graphicsclass.h"
@@ -364,7 +364,7 @@ bool GraphicsClass::Frame(int fps, int cpu)
 	for (auto Model : m_Models)
 	{
 		NumOfObj += Model->GetInstanceCount();
-		PolyNum += (Model->GetIndexCount())/3;
+		PolyNum += (Model->GetIndexCount()) / 3;
 	}
 
 	result = m_Text->SetNumberOfObject(NumOfObj, m_D3D->GetDeviceContext());
@@ -401,35 +401,35 @@ void GraphicsClass::SetInputMapping()
 
 	InputMapping.BindKeyDownEvent(DIK_6, [&]() {
 		this->ChangeAmbientLightMode();
-	});
+		});
 
 	InputMapping.BindKeyDownEvent(DIK_7, [&]() {
 		this->ChangeDeffuseLightMode();
-	});
+		});
 
 	InputMapping.BindKeyDownEvent(DIK_8, [&]() {
 		this->ChangeSpecularLightMode();
-	});
+		});
 
 	InputMapping.BindKeyDownEvent(DIK_R, [&]() {
 		this->ChangeColorPointLightRed();
-	});
+		});
 
 	InputMapping.BindKeyDownEvent(DIK_G, [&]() {
 		this->ChangeColorPointLightGreen();
-	});
+		});
 
 	InputMapping.BindKeyDownEvent(DIK_B, [&]() {
 		this->ChangeColorPointLightBlue();
-	});
+		});
 
 	InputMapping.BindKeyDownEvent(DIK_MINUS, [&]() {
 		this->ReduceIntensity();
-	});
+		});
 
 	InputMapping.BindKeyEvent(DIK_EQUALS, [&]() {
 		this->IncreaseIntensity();
-	});
+		});
 }
 
 void GraphicsClass::ChangeAmbientLightMode()
@@ -809,7 +809,7 @@ bool GraphicsClass::Render(float rotation)
 	{
 		time -= deltaTime;
 	}
-	
+
 	if (time >= 2.0f)
 	{
 		olivUp = false;
@@ -832,101 +832,101 @@ bool GraphicsClass::Render(float rotation)
 		bool IsRotate = false;
 		switch (count)
 		{
-			
-			case 0:
-			{
-				//worldMatrix2 = XMMatrixTranslation(0/)
-				worldMatrix2 *= XMMatrixScaling(1000.0f, 1.0f, 1000.0f);
-				break;
-			}
-			case 1:
-			{
-				worldMatrix2 *= XMMatrixScaling(0.1f, 0.1f, 0.1f);
-				worldMatrix2 *= XMMatrixRotationY(rotation * 3);
-				worldMatrix2 *= XMMatrixTranslation(0.0f, -8.0f, -5.0f);
-				IsRotate = true;
-				break;
-			}
-			case 2:
-			{
-				worldMatrix2 *= XMMatrixScaling(0.1f, 0.1f, 0.1f);
-				break;
-			}
-			case 3:
-			{
-				worldMatrix2 *= XMMatrixScaling(1.5f, 1.5f, 1.5f);
-				break;
-			}
-			case 4:
-			{
-				worldMatrix2 *= XMMatrixScaling(0.3f, 0.3f, 0.3f);
-				break;
-			}
-			case 6:
-			{
-				worldMatrix2 = XMMatrixRotationY(rotation);
-				worldMatrix2 *= XMMatrixScaling(15.0f, 15.0f, 15.0f);
-				worldMatrix2 *= XMMatrixTranslation(7.0f, -8.0f, -3.0f);
-				IsRotate = true;
-				break;
-			}
-			case 7:
-			{
-				worldMatrix2 *= XMMatrixScaling(15.0f, 20.0f, 15.0f);
-				worldMatrix2 *= XMMatrixTranslation(0.0f, -8.0f, 0.0f);
-				IsRotate = true;
-				break;
-			}
-			case 8:
-			{
-				
-				worldMatrix2 = XMMatrixRotationY(rotation);
-				worldMatrix2 *= XMMatrixScaling(0.1f, 0.1f, 0.1f);
 
-				worldMatrix2 *= XMMatrixTranslation(0.0f, time, -68.0f);
+		case 0:
+		{
+			//worldMatrix2 = XMMatrixTranslation(0/)
+			worldMatrix2 *= XMMatrixScaling(1000.0f, 1.0f, 1000.0f);
+			break;
+		}
+		case 1:
+		{
+			worldMatrix2 *= XMMatrixScaling(0.1f, 0.1f, 0.1f);
+			worldMatrix2 *= XMMatrixRotationY(rotation * 3);
+			worldMatrix2 *= XMMatrixTranslation(0.0f, -8.0f, -5.0f);
+			IsRotate = true;
+			break;
+		}
+		case 2:
+		{
+			worldMatrix2 *= XMMatrixScaling(0.1f, 0.1f, 0.1f);
+			break;
+		}
+		case 3:
+		{
+			worldMatrix2 *= XMMatrixScaling(1.5f, 1.5f, 1.5f);
+			break;
+		}
+		case 4:
+		{
+			worldMatrix2 *= XMMatrixScaling(0.3f, 0.3f, 0.3f);
+			break;
+		}
+		case 6:
+		{
+			worldMatrix2 = XMMatrixRotationY(rotation);
+			worldMatrix2 *= XMMatrixScaling(15.0f, 15.0f, 15.0f);
+			worldMatrix2 *= XMMatrixTranslation(7.0f, -8.0f, -3.0f);
+			IsRotate = true;
+			break;
+		}
+		case 7:
+		{
+			worldMatrix2 *= XMMatrixScaling(15.0f, 20.0f, 15.0f);
+			worldMatrix2 *= XMMatrixTranslation(0.0f, -8.0f, 0.0f);
+			IsRotate = true;
+			break;
+		}
+		case 8:
+		{
 
-				//worldMatrix2 *= XMMatrixTranslation(0.0f, 3.0f, -70.0f);
-				IsRotate = true;
-				break;
-			}
-			case 9:
-			{
-				worldMatrix2 *= XMMatrixRotationY(rotation*2);
-				worldMatrix2 *= XMMatrixScaling(0.5f, 0.5f, 0.5f);
+			worldMatrix2 = XMMatrixRotationY(rotation);
+			worldMatrix2 *= XMMatrixScaling(0.1f, 0.1f, 0.1f);
 
-				worldMatrix2 *= XMMatrixTranslation(50.0f, time - 5.0f, 10.0f);
-				
-				//worldMatrix2 *= XMMatrixTranslation(50.0f, -5.0f, 10.0f);
-				IsRotate = true;
-				break;
-			}
-			case 10:
-			case 11:
-			{
-				worldMatrix2 *= XMMatrixScaling(1.0f, 1.0f, 1.0f);
-				break;
-			}
-			case 12:
-			{
-				worldMatrix2 *= XMMatrixRotationY(rotation);
-				worldMatrix2 *= XMMatrixScaling(10.0f, 10.0f, 10.0f);
+			worldMatrix2 *= XMMatrixTranslation(0.0f, time, -68.0f);
 
-				worldMatrix2 *= XMMatrixTranslation(-100.0f, time - 4.0f, -40.0f);
-				IsRotate = true;
-				
-				break;
-			}
-			case 13:
-			{
-				worldMatrix2 = XMMatrixRotationY(-rotation);
-				worldMatrix2 *= XMMatrixScaling(10.0f, 10.0f, 10.0f);
-				break;
-			}
-			default:
-			{
-				worldMatrix2 *= XMMatrixScaling(1.0f, 1.0f, 1.0f);
-				break;
-			}
+			//worldMatrix2 *= XMMatrixTranslation(0.0f, 3.0f, -70.0f);
+			IsRotate = true;
+			break;
+		}
+		case 9:
+		{
+			worldMatrix2 *= XMMatrixRotationY(rotation * 2);
+			worldMatrix2 *= XMMatrixScaling(0.5f, 0.5f, 0.5f);
+
+			worldMatrix2 *= XMMatrixTranslation(50.0f, time - 5.0f, 10.0f);
+
+			//worldMatrix2 *= XMMatrixTranslation(50.0f, -5.0f, 10.0f);
+			IsRotate = true;
+			break;
+		}
+		case 10:
+		case 11:
+		{
+			worldMatrix2 *= XMMatrixScaling(1.0f, 1.0f, 1.0f);
+			break;
+		}
+		case 12:
+		{
+			worldMatrix2 *= XMMatrixRotationY(rotation);
+			worldMatrix2 *= XMMatrixScaling(10.0f, 10.0f, 10.0f);
+
+			worldMatrix2 *= XMMatrixTranslation(-100.0f, time - 4.0f, -40.0f);
+			IsRotate = true;
+
+			break;
+		}
+		case 13:
+		{
+			worldMatrix2 = XMMatrixRotationY(-rotation);
+			worldMatrix2 *= XMMatrixScaling(10.0f, 10.0f, 10.0f);
+			break;
+		}
+		default:
+		{
+			worldMatrix2 *= XMMatrixScaling(1.0f, 1.0f, 1.0f);
+			break;
+		}
 		}
 
 		XMFLOAT4 diffuseColor[3];

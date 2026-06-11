@@ -157,7 +157,11 @@ bool InputClass::Frame()
 	}
 
 	// Process the changes in the mouse and keyboard.
+	// 수집 단계: 상태 변화를 판정해 이벤트 큐에 쌓는다.
 	ProcessInput();
+
+	// 배포 단계: 큐를 비우며 구독자에게 이벤트를 전달한다.
+	InputMappingClass::GetInstance().DispatchQueue();
 
 	return true;
 }
@@ -183,24 +187,6 @@ void InputClass::GetMouseLocation(int& mouseX, int& mouseY)
 {
 	mouseX = m_mouseX;
 	mouseY = m_mouseY;
-	return;
-}
-
-void InputClass::UpdateKeyState(unsigned int Key, bool IsDown)
-{
-	if (!IsDown)
-	{
-		m_KeyState[Key] = KeyState::Up;
-		return;
-	}
-
-	if (m_KeyState[Key] == KeyState::Down || m_KeyState[Key] == KeyState::Pressed)
-	{
-		m_KeyState[Key] = KeyState::Pressed;
-		return;
-	}
-
-	m_KeyState[Key] = KeyState::Down;
 	return;
 }
 
@@ -252,13 +238,16 @@ bool InputClass::ReadMouse()
 
 void InputClass::ProcessInput()
 {
-	InputMappingClass& InputMappingClass = InputMappingClass::GetInstance();
+	InputMappingClass& InputMapping = InputMappingClass::GetInstance();
 
+	// 마우스: 이동이 있으면 델타를 이벤트로 큐에 넣는다.
 	if ((m_mouseState.lX != mouseLastState.lX) || (m_mouseState.lY != mouseLastState.lY))
 	{
-		InputMappingClass.SetMouseState(mouseLastState.lX * 0.001f, m_mouseState.lY * 0.001f);
-
-		InputMappingClass.GetMouseMoveEvent()();
+		InputEvent Event;
+		Event.Type = InputType::Mouse_Move;
+		Event.MouseX = m_mouseState.lX * 0.001f;
+		Event.MouseY = m_mouseState.lY * 0.001f;
+		InputMapping.QueueEvent(Event);
 
 		mouseLastState = m_mouseState;
 	}
@@ -274,55 +263,35 @@ void InputClass::ProcessInput()
 	if (m_mouseX > m_screenWidth) { m_mouseX = m_screenWidth; }
 	if (m_mouseY > m_screenHeight) { m_mouseY = m_screenHeight; }
 
-	
-
-	for (int i = 0; i<256; i++)
+	// 키보드: 직전 프레임 상태와 비교해 전이를 판정하고 이벤트를 큐에 넣는다.
+	for (int i = 0; i < 256; i++)
 	{
-		bool bIsKeyDown = (m_keyboardState[i] & 0x80);
-
-		UpdateKeyState(i, bIsKeyDown);
+		bool bIsKeyDown = (m_keyboardState[i] & 0x80) != 0;
+		bool bWasDown = (m_KeyState[i] == KeyState::Down) || (m_KeyState[i] == KeyState::Pressed);
 
 		if (bIsKeyDown)
 		{
-			switch (m_KeyState[i])
+			if (bWasDown)
 			{
-				case KeyState::Down:
-				{
-					if (InputMappingClass.GetKeyDownEvent()[i])
-					{
-						InputMappingClass.GetKeyDownEvent()[i]();
-					}
-					break;
-				}
-
-				case KeyState::Pressed:
-				{
-					if (InputMappingClass.GetKeyEvent()[i])
-					{
-						InputMappingClass.GetKeyEvent()[i]();
-					}
-					break;
-				}
-
-				case KeyState::Up:
-				{
-					if (InputMappingClass.GetKeyUpEvent()[i])
-					{
-						InputMappingClass.GetKeyUpEvent()[i]();
-					}
-					break;
-				}
-
-				default:
-				{
-					break;
-				}
+				// 계속 눌림.
+				m_KeyState[i] = KeyState::Pressed;
+				InputMapping.QueueEvent({ InputType::Key_Held, i });
 			}
-
-			if (InputMappingClass.GetKeyEvent()[i])
+			else
 			{
-				InputMappingClass.GetKeyEvent()[i]();
+				// 눌린 첫 프레임.
+				m_KeyState[i] = KeyState::Down;
+				InputMapping.QueueEvent({ InputType::Key_Down, i });
 			}
+		}
+		else
+		{
+			if (bWasDown)
+			{
+				// 떼어진 프레임.
+				InputMapping.QueueEvent({ InputType::Key_Up, i });
+			}
+			m_KeyState[i] = KeyState::Up;
 		}
 	}
 
